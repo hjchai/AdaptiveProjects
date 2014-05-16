@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5AE6CB461925BA570073763F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5AE6CB451925BA570073763F /* main.cpp */; };
 		5AE6CB481925BA570073763F /* AdaptiveProject.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5AE6CB471925BA570073763F /* AdaptiveProject.1 */; };
+		5AE6CB511925BF550073763F /* supportfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5AE6CB501925BF550073763F /* supportfile.cpp */; };
+		5AE6CB531925BFEF0073763F /* network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5AE6CB521925BFEF0073763F /* network.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +30,14 @@
 		5AE6CB421925BA570073763F /* AdaptiveProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdaptiveProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AE6CB451925BA570073763F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5AE6CB471925BA570073763F /* AdaptiveProject.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = AdaptiveProject.1; sourceTree = "<group>"; };
+		5AE6CB4E1925BA910073763F /* supportfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = supportfile.h; sourceTree = "<group>"; };
+		5AE6CB4F1925BCE00073763F /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = network.h; sourceTree = "<group>"; };
+		5AE6CB501925BF550073763F /* supportfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = supportfile.cpp; sourceTree = "<group>"; };
+		5AE6CB521925BFEF0073763F /* network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = network.cpp; sourceTree = "<group>"; };
+		5AE6CB551925C7030073763F /* network.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = network.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/network.txt; sourceTree = "<group>"; };
+		5AE6CB561925C7030073763F /* od.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = od.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/od.txt; sourceTree = "<group>"; };
+		5AE6CB571925C7030073763F /* stonetwork.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = stonetwork.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/stonetwork.txt; sourceTree = "<group>"; };
+		5AE6CB581925C7030073763F /* trafficlight.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = trafficlight.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/trafficlight.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +54,7 @@
 		5AE6CB391925BA570073763F = {
 			isa = PBXGroup;
 			children = (
+				5AE6CB541925C6E70073763F /* Data */,
 				5AE6CB441925BA570073763F /* AdaptiveProject */,
 				5AE6CB431925BA570073763F /* Products */,
 			);
@@ -62,8 +73,23 @@
 			children = (
 				5AE6CB451925BA570073763F /* main.cpp */,
 				5AE6CB471925BA570073763F /* AdaptiveProject.1 */,
+				5AE6CB4E1925BA910073763F /* supportfile.h */,
+				5AE6CB4F1925BCE00073763F /* network.h */,
+				5AE6CB501925BF550073763F /* supportfile.cpp */,
+				5AE6CB521925BFEF0073763F /* network.cpp */,
 			);
 			path = AdaptiveProject;
+			sourceTree = "<group>";
+		};
+		5AE6CB541925C6E70073763F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				5AE6CB551925C7030073763F /* network.txt */,
+				5AE6CB561925C7030073763F /* od.txt */,
+				5AE6CB571925C7030073763F /* stonetwork.txt */,
+				5AE6CB581925C7030073763F /* trafficlight.txt */,
+			);
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +144,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5AE6CB461925BA570073763F /* main.cpp in Sources */,
+				5AE6CB511925BF550073763F /* supportfile.cpp in Sources */,
+				5AE6CB531925BFEF0073763F /* network.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +255,7 @@
 				5AE6CB4D1925BA570073763F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

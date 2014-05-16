@@ -7,12 +7,16 @@
 //
 
 #include <iostream>
+#include "network.h"
 
 int main(int argc, const char * argv[])
 {
 
     // insert code here...
-    std::cout << "Hello, World!\n";
+    cout << "Hello, World!\n";
+    string net_file = "./data/network.txt";
+    string tl_file = "./data/trafficlight.txt";
+    Network net(net_file, tl_file);
     return 0;
 }
 

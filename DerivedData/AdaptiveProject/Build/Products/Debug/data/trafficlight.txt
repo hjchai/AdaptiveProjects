@@ -1,0 +1,4 @@
+Node ID,Control type,Num of phases,Cycle length
+4   TL  2   10
+2   4   5   0.3
+3   4   5   0.7
