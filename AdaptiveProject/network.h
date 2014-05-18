@@ -5,13 +5,6 @@
 #include <string>
 #include <utility>
 
-struct connect {
-    int tail_Node;
-    vector<pair<int, double>> possible_Cost;
-    int flow;
-    int capacity;
-};
-
 class Network {
 private:
     int node_Number;
@@ -21,6 +14,7 @@ private:
 public:
     Network();                              //Default constructor
     Network(string net_File, string tl_File);
+    void add_Vehicle(int vehicleID, int startNode, int endNode, int currentLink, int startTime);
 };
 
 #endif

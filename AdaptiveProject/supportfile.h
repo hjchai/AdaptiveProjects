@@ -6,6 +6,13 @@
 
 using namespace std;
 
+struct connect {
+    int tail_Node;
+    vector<pair<int, double>> possible_Cost;
+    int flow;
+    int capacity;
+};
+
 class Vehicle {
 private:
     int vehicle_ID;
@@ -16,6 +23,8 @@ private:
 public:
     Vehicle();
     Vehicle(int vehicleID, int stratNode, int endNode, int currentLink, int startTime);
+    vector<vector<connect>> getCurrentTravelTime();
+    void get_SP(vector<vector<connect>> currentTravelTime);
 };
 
 /************************************

@@ -83,3 +83,8 @@ Network::Network(string net_File, string tl_File) {
     }
 }
 
+void Network::add_Vehicle(int vehicleID, int startNode, int endNode, int currentLink, int startTime) {
+    Vehicle newVehicle = *new Vehicle(vehicleID, startNode, endNode, currentLink, startTime);
+    vehicles.push_back(newVehicle);
+}
+
