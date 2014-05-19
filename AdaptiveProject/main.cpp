@@ -17,6 +17,13 @@ int main(int argc, const char * argv[])
     string net_file = "./data/network.txt";
     string tl_file = "./data/trafficlight.txt";
     Network net(net_file, tl_file);
+    int timer = 0;
+    while (timer < 1000) {
+        net.add_Vehicle(1, 1, 5, {1,1,1,-1}, 0);//VehicleID, startNode, endNode, state, startTime
+        vector<vector<connect>> currentLinkCost = net.getCurrentTravelTime();
+        net.checkState();
+        timer ++;
+    }
     return 0;
 }
 

@@ -29,9 +29,9 @@
 /* Begin PBXFileReference section */
 		5AE6CB421925BA570073763F /* AdaptiveProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdaptiveProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AE6CB451925BA570073763F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		5AE6CB471925BA570073763F /* AdaptiveProject.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = AdaptiveProject.1; sourceTree = "<group>"; };
-		5AE6CB4E1925BA910073763F /* supportfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = supportfile.h; sourceTree = "<group>"; };
-		5AE6CB4F1925BCE00073763F /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = network.h; sourceTree = "<group>"; };
+		5AE6CB471925BA570073763F /* AdaptiveProject.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; name = AdaptiveProject.1; path = AdaptiveProject/AdaptiveProject.1; sourceTree = "<group>"; };
+		5AE6CB4E1925BA910073763F /* supportfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = supportfile.h; path = AdaptiveProject/supportfile.h; sourceTree = "<group>"; };
+		5AE6CB4F1925BCE00073763F /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network.h; path = AdaptiveProject/network.h; sourceTree = "<group>"; };
 		5AE6CB501925BF550073763F /* supportfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = supportfile.cpp; sourceTree = "<group>"; };
 		5AE6CB521925BFEF0073763F /* network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = network.cpp; sourceTree = "<group>"; };
 		5AE6CB551925C7030073763F /* network.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = network.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/network.txt; sourceTree = "<group>"; };
@@ -51,12 +51,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A94B2C419296ABB00565C24 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				5AE6CB4E1925BA910073763F /* supportfile.h */,
+				5AE6CB4F1925BCE00073763F /* network.h */,
+			);
+			name = Header;
+			sourceTree = "<group>";
+		};
 		5AE6CB391925BA570073763F = {
 			isa = PBXGroup;
 			children = (
-				5AE6CB541925C6E70073763F /* Data */,
+				5A94B2C419296ABB00565C24 /* Header */,
 				5AE6CB441925BA570073763F /* AdaptiveProject */,
 				5AE6CB431925BA570073763F /* Products */,
+				5AE6CB541925C6E70073763F /* Data */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,9 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				5AE6CB451925BA570073763F /* main.cpp */,
-				5AE6CB471925BA570073763F /* AdaptiveProject.1 */,
-				5AE6CB4E1925BA910073763F /* supportfile.h */,
-				5AE6CB4F1925BCE00073763F /* network.h */,
 				5AE6CB501925BF550073763F /* supportfile.cpp */,
 				5AE6CB521925BFEF0073763F /* network.cpp */,
 			);
@@ -84,6 +91,7 @@
 		5AE6CB541925C6E70073763F /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				5AE6CB471925BA570073763F /* AdaptiveProject.1 */,
 				5AE6CB551925C7030073763F /* network.txt */,
 				5AE6CB561925C7030073763F /* od.txt */,
 				5AE6CB571925C7030073763F /* stonetwork.txt */,

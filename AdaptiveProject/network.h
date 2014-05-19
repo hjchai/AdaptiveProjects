@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+
 class Network {
 private:
     int node_Number;
@@ -14,7 +15,11 @@ private:
 public:
     Network();                              //Default constructor
     Network(string net_File, string tl_File);
-    void add_Vehicle(int vehicleID, int startNode, int endNode, int currentLink, int startTime);
+    void add_Vehicle(int vehicleID, int startNode, int endNode, vehicle_state onlineState, int startTime);
+    vector<vector<connect>> getCurrentTravelTime();
+    void checkState();// In every time step, check out all vehicles to see if they should change their decision or not.
+    
+    friend class Vehicle;
 };
 
 #endif

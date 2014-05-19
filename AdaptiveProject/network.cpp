@@ -33,14 +33,14 @@ Network::Network(string net_File, string tl_File) {
         }
         while (myfile.good()) {
             myfile >> head >> tail >> capacity >> length >> speed >> ffs >> time >> prob;
-            vector<connect>::iterator iter = findNode(tail, graph[head-1]);
+            vector<connect>::iterator iter = findNode(tail-1, graph[head-1]);
             if (iter != graph[head-1].end()) {
                 iter->possible_Cost.push_back(make_pair(time, prob));
             }
             else {
                 vector<pair<int, double>> tmp;
                 tmp.push_back(make_pair(time, prob));
-                connect adj_Link = {tail, tmp, 0, capacity};
+                connect adj_Link = {tail-1, tmp, 0, capacity};
                 graph[head-1].push_back(adj_Link);
             }
         }
@@ -69,7 +69,7 @@ Network::Network(string net_File, string tl_File) {
                 for(int i = 0; i < numOfPhase; i++)
                 {
                     tlFile >> fromNode >> currentNode >> toNode >> split;
-                    tmp_phase = {fromNode, toNode, split};
+                    tmp_phase = {fromNode-1, toNode-1, split};
                     tmp_phases.push_back(tmp_phase);
                 }
                 Traffic_Light tmp_tl = *new Traffic_Light(currentNode, cycleLength, numOfPhase, tmp_phases);
@@ -83,8 +83,45 @@ Network::Network(string net_File, string tl_File) {
     }
 }
 
-void Network::add_Vehicle(int vehicleID, int startNode, int endNode, int currentLink, int startTime) {
-    Vehicle newVehicle = *new Vehicle(vehicleID, startNode, endNode, currentLink, startTime);
+// Add a vehicle into the network
+void Network::add_Vehicle(int vehicleID, int startNode, int endNode, vehicle_state onlineState, int startTime) {
+    Vehicle newVehicle = *new Vehicle(vehicleID, startNode-1, endNode-1, onlineState, startTime, node_Number);
     vehicles.push_back(newVehicle);
 }
 
+// Retrive the current link travel time
+vector<vector<connect>> Network::getCurrentTravelTime() {
+    vector<vector<connect>> linkInfo;
+    linkInfo.resize(node_Number);
+    int counter = 0;
+    for (vector<vector<connect>>::const_iterator iter = graph.begin(); iter < graph.end(); iter++) {
+        for (vector<connect>::const_iterator iter1 = iter->begin(); iter1 < iter->end(); iter1++) {
+            vector<pair<int, double>> possibleValue;
+            possibleValue.clear();
+            possibleValue = iter1->possible_Cost;
+            int randCost = generateRandCost(possibleValue);
+            int tailNode = iter1->tail_Node;
+            vector<pair<int, double>> tmp;
+            tmp.push_back(make_pair(randCost,1));
+            connect con = {tailNode, tmp, -1, -1};
+            linkInfo[counter].push_back(con);
+        }
+        counter++;
+    }
+    return linkInfo;
+}
+
+void Network::checkState() {
+    for (vector<Vehicle>::iterator iter = vehicles.begin(); iter < vehicles.end(); iter++) {
+        if (iter->online_State.if_At_Next_Node == 2) {
+            //remove_this_vehicle, and do some update work;
+        }
+        else if (iter->online_State.if_At_Next_Node == 0) {//In the middle of the link
+            
+        }
+        else {//At next node, but not at dest node.
+            vector<vector<connect>> currentTravelTime = getCurrentTravelTime();
+            iter->get_SP(iter->end_Node, currentTravelTime, TLS);
+        }
+    }
+}
