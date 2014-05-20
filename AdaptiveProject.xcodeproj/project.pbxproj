@@ -27,6 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5A007526192AB7B200A93B53 /* vehicle.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vehicle.txt; path = DerivedData/AdaptiveProject/Build/Products/Debug/data/vehicle.txt; sourceTree = "<group>"; };
 		5AE6CB421925BA570073763F /* AdaptiveProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdaptiveProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AE6CB451925BA570073763F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5AE6CB471925BA570073763F /* AdaptiveProject.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; name = AdaptiveProject.1; path = AdaptiveProject/AdaptiveProject.1; sourceTree = "<group>"; };
@@ -96,6 +97,7 @@
 				5AE6CB561925C7030073763F /* od.txt */,
 				5AE6CB571925C7030073763F /* stonetwork.txt */,
 				5AE6CB581925C7030073763F /* trafficlight.txt */,
+				5A007526192AB7B200A93B53 /* vehicle.txt */,
 			);
 			name = Data;
 			sourceTree = "<group>";

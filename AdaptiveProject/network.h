@@ -4,6 +4,9 @@
 #include "supportfile.h"
 #include <string>
 #include <utility>
+#include <fstream>
+#include <iterator>
+
 
 
 class Network {
@@ -15,7 +18,7 @@ private:
 public:
     Network();                              //Default constructor
     Network(string net_File, string tl_File);
-    void add_Vehicle(int vehicleID, int startNode, int endNode, vehicle_state onlineState, int startTime);
+    void add_Vehicle(int vehicleID, int startNode, int endNode, int currentNode, int nextNode, int if_at_next_node, int current_link_travel_time, int time_traveled, int startTime);
     vector<vector<connect>> getCurrentTravelTime();
     void checkState();// In every time step, check out all vehicles to see if they should change their decision or not.
     

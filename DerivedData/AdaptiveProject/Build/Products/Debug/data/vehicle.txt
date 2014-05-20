@@ -1,0 +1,3 @@
+VehicleID,startNode,endNode,state{currentNode,nextNode,if_At_Next_Node,current_Link_travel_Time},startTime
+1   1   5   1   1   1   -1  0
+2   2   5   2   2   1   -1  0

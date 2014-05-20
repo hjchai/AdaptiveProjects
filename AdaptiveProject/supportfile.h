@@ -7,6 +7,7 @@
 using namespace std;
 
 const int max_weight = std::numeric_limits<double>::infinity();
+const int SIM_LENGTH = 30;
 
 
 struct connect {
@@ -20,6 +21,7 @@ struct vehicle_state {
     int next_Node;
     int if_At_Next_Node; // defaul:0, at_next_ndoe:1, at_destnation_node:2
     int current_Link_Travel_Time;
+    int time_traveled;//time spent in current link
 };
 
 class Traffic_Light;
