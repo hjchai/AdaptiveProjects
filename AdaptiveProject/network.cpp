@@ -82,8 +82,8 @@ Network::Network(string net_File, string tl_File) {
 }
 
 // Add a vehicle into the network
-void Network::add_Vehicle(int vehicleID, int startNode, int endNode, int currentNode, int nextNode, int if_at_next_node, int current_link_travel_time, int time_traveled, int startTime) {
-    struct vehicle_state onlineState = {currentNode-1, nextNode-1, if_at_next_node, current_link_travel_time, time_traveled};
+void Network::add_Vehicle(int vehicleID, int startNode, int endNode, int startTime) {
+    struct vehicle_state onlineState = {startNode-1, startNode-1, startNode-1, 3, -1, -1};
     Vehicle newVehicle = *new Vehicle(vehicleID, startNode-1, endNode-1, onlineState, startTime, node_Number);
     vehicles.push_back(newVehicle);
 }
@@ -113,12 +113,12 @@ vector<vector<connect>> Network::getCurrentTravelTime() {
 void Network::checkState() {
     for (vector<Vehicle>::iterator iter = vehicles.begin(); iter < vehicles.end(); iter++) {
         if (iter->online_State.if_At_Next_Node == 2) {
-            
+            iter->route_History.push_back(iter->end_Node);
+            existed_Vehicles.push_back(*iter);
             vehicles.erase(iter);
-            //remove_this_vehicle, and do some update work;
-            
+            //remove_this_vehicle, and add to existed_vehicle.
         }
-        else if (iter->online_State.if_At_Next_Node == 0) {//In the middle of the link
+        else if (iter->online_State.if_At_Next_Node == 0) {//In the middle of the link, mode 0 || at the itersection, waiting for signals to pass, mode 4.
             int tmp1 = iter->time_Spent;
             tmp1++;
             iter->time_Spent = tmp1;
@@ -130,6 +130,25 @@ void Network::checkState() {
                     iter->online_State.if_At_Next_Node = 1;//change vehicle state to 1, means arrived at next node
                 else
                     iter->online_State.if_At_Next_Node = 2;//change vehicle state to 2, emans arrived at dest node.
+            }
+        }
+        else if (iter->online_State.if_At_Next_Node == 4) {
+            int current = iter->online_State.current_Node;
+            int timeStep = iter->time_Spent + iter->start_Time;
+            int from = iter->online_State.last_Node;
+            int to = iter->online_State.next_Node;
+            int penalty = TLS[current].getPenalty(timeStep, from, current, to);
+            if (penalty != 0) {
+                iter->time_Spent = iter->time_Spent + 1; //bug
+            }
+            else {
+                iter->online_State.if_At_Next_Node = 0;
+                iter->online_State.time_traveled = 1;
+                iter->time_Spent = iter->time_Spent + 1;
+                int dis2 = (int)distance(graph[current].begin(), findNode(from, graph[current]));
+                graph[current][dis2].flow = graph[current][dis2].flow - 1;
+                int dis3 = (int)distance(graph[to].begin(), findNode(current, graph[to]));
+                graph[to][dis3].flow = graph[to][dis3].flow + 1;
             }
         }
         else {//At next node, but not at dest node. Mode 1&3. 3 means origins from this node, 1 means reachs next node.
@@ -152,21 +171,44 @@ void Network::checkState() {
             int to = iter->SP_Result[current][dis][0].second;
             
             int dis1 = (int)distance(graph[to].begin(), findNode(current, graph[to]));//this is the index of current node in the to node's adjacent list
-            //UPDATE link flow state
-            if (iter->online_State.if_At_Next_Node == 1) {
-                int dis2 = (int)distance(graph[current].begin(), findNode(from, graph[current]));
-                graph[current][dis2].flow = graph[current][dis2].flow - 1;
+            /**********************************
+             Updating part
+             *********************************/
+            int penalty;
+            if (iter->online_State.if_At_Next_Node == 3)
+                penalty = 0;
+            else
+                penalty = TLS[current].getPenalty(iter->time_Spent + iter->start_Time, from, current, to);
+            if (penalty != 0) {
+                iter->online_State.if_At_Next_Node = 4;
+                iter->online_State.time_traveled = 0;
+                iter->time_Spent = iter->time_Spent + 1;
+                
+                // UPDATE vehicle state
+                iter->online_State.last_Node = from;
+                iter->online_State.current_Node = current;//change current node
+                iter->online_State.next_Node = to;//change next node
+                iter->online_State.current_Link_Travel_Time = currentTravelTime[to][dis1].possible_Cost[0].first;//change current travel time
             }
-            int dis3 = (int)distance(graph[to].begin(), findNode(current, graph[to]));
-            graph[to][dis3].flow = graph[to][dis3].flow + 1;
-            
-            // UPDATE vehicle state
-            iter->online_State.current_Node = current;//change current node
-            iter->online_State.next_Node = to;//change next node
-            iter->online_State.if_At_Next_Node = 0;//change link state from 1 to 0
-            iter->online_State.time_traveled = 1;//start traveling in the new link
-            iter->online_State.current_Link_Travel_Time = currentTravelTime[to][dis1].possible_Cost[0].first;//change current travel time
-            iter->time_Spent = iter->time_Spent + 1;
+            else {
+                //UPDATE link flow state
+                if (iter->online_State.if_At_Next_Node == 1) {
+                    int dis2 = (int)distance(graph[current].begin(), findNode(from, graph[current]));
+                    graph[current][dis2].flow = graph[current][dis2].flow - 1;
+                }
+                int dis3 = (int)distance(graph[to].begin(), findNode(current, graph[to]));
+                graph[to][dis3].flow = graph[to][dis3].flow + 1;
+                
+                // UPDATE vehicle state
+                iter->online_State.last_Node = from;
+                iter->online_State.current_Node = current;//change current node
+                iter->online_State.next_Node = to;//change next node
+                iter->online_State.if_At_Next_Node = 0;//change link state from 1 to 0
+                iter->online_State.time_traveled = 1;//start traveling in the new link
+                iter->online_State.current_Link_Travel_Time = currentTravelTime[to][dis1].possible_Cost[0].first;//change current travel time
+                iter->time_Spent = iter->time_Spent + 1;
+            }
+            iter->route_History.push_back(current);
         }
     }
 }

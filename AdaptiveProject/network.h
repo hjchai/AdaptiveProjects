@@ -8,20 +8,25 @@
 #include <iterator>
 
 
-
 class Network {
 private:
     int node_Number;
     vector<Vehicle> vehicles;               //Define vehicles within the network
     vector<Traffic_Light> TLS;              //Define traffic lights in the network
     vector<vector<connect>> graph;          //Define a graph, which contains link info, and node info
+    vector<Vehicle> existed_Vehicles;       //Designed to store those vehicles existing network already
 public:
     Network();                              //Default constructor
     Network(string net_File, string tl_File);
-    void add_Vehicle(int vehicleID, int startNode, int endNode, int currentNode, int nextNode, int if_at_next_node, int current_link_travel_time, int time_traveled, int startTime);
+    void add_Vehicle(int vehicleID, int startNode, int endNode, int startTime);
     vector<vector<connect>> getCurrentTravelTime();
     void checkState();// In every time step, check out all vehicles to see if they should change their decision or not.
-    
+    //Utility function
+    /*
+     To Do
+     */
+    int getTotalTravelTime();
+    //Friend classes
     friend class Vehicle;
 };
 

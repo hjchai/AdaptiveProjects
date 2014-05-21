@@ -7,7 +7,7 @@
 using namespace std;
 
 const int max_weight = std::numeric_limits<double>::infinity();
-const int SIM_LENGTH = 30;
+const int SIM_LENGTH = 30; // This defines the number of time steps that a node should remeber in shortest path calculation.
 
 
 struct connect {
@@ -17,6 +17,7 @@ struct connect {
     int capacity;
 };
 struct vehicle_state {
+    int last_Node;
     int current_Node;
     int next_Node;
     int if_At_Next_Node; // defaul:0, at_next_ndoe:1, at_destnation_node:2
@@ -33,9 +34,10 @@ private:
     int end_Node;
     vehicle_state online_State;
     int start_Time;
-    vector<vector<vector<pair<int, int>>>> SP_Result;//pair<minDis, next_Node>
-    int time_Spent = 0;//should be updated in update_Vehicle_State()
-    int network_Size; // This variable is deigned to store the network info. Vehicle need to know this.
+    vector<vector<vector<pair<int, int>>>> SP_Result;       //pair<minDis, next_Node>, online shortest path
+    int time_Spent = 0;                                     //should be updated in update_Vehicle_State()
+    vector<int> route_History;                              //Designed to store this vehicles route history
+    int network_Size;                                       // This variable is deigned to store the network info. Vehicle need to know this.
     
 public:
     Vehicle();

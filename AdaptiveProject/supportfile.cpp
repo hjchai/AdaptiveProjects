@@ -6,6 +6,7 @@ Vehicle::Vehicle(int vehicleID, int startNode, int endNode, vehicle_state online
     end_Node = endNode;
     online_State = onlineState;
     start_Time = startTime;
+    //route_History.resize(1,startNode);
     network_Size = size; // This info is number of node in network
 }
 
@@ -62,13 +63,7 @@ void Vehicle::get_SP(int dest_Node, vector<vector<connect>> currentTravelTime, v
                         penalty = currentTLS[i].getPenalty(index+timeStep, h, i, j);// it is important to include timeStep here. Because this SP calculation is performed at very time "timeStep"!
                     double tmp_label = 0;
                     int m = index + penalty + linkcost;
-                    /*
-                    int cycle_Next_Node = currentTLS[currentNode].tl_Cycle;
-                    if ( cycle_Next_Node == -1)
-                        m = 0;
-                    else
-                        m = (index + penalty + linkcost)%cycle_Next_Node;
-                     */
+                    
                     tmp_label = penalty + linkcost + SP_Result[j][i_index][m].first;
                     
                     if(tmp_label < SP_Result[i][h_index][index].first)
@@ -99,6 +94,9 @@ Traffic_Light::Traffic_Light(int tlID, int tlCycle, int phaseNumber, vector<phas
 
 int Traffic_Light::getPenalty(int timeStep, int upstreamNode, int trafficLightNode, int downstreamNode)
 {
+    if (this->phase_Number == -1) {
+        return 0;
+    }
     int b = timeStep % tl_Cycle;
     vector<pair<int, int>> index;
     int time_start = 0;
