@@ -15,12 +15,12 @@ int main(int argc, const char * argv[])
 
     // insert code here...
     cout << "Hello, World!\n";
-    string net_file = "./data/network.txt";
-    string tl_file = "./data/trafficlight.txt";
+    string net_file = "./data/Simple_network/network.txt";
+    string tl_file = "./data/Simple_network/trafficlight.txt";
     /*
      This part is for read in the vehicle file
      */
-    string veh_file = "./data/vehicle.txt";
+    string veh_file = "./data/Simple_network/vehicle.txt";
     ifstream vehicle_Add(veh_file.c_str());
     vector<vector<int>> vehicle_data;
     if (!vehicle_Add.is_open()) {
@@ -56,6 +56,7 @@ int main(int argc, const char * argv[])
         }
         
         vector<vector<connect>> currentLinkCost = net.getCurrentTravelTime();
+        //net.update_TLS();
         net.checkState();
         timer ++;
     }

@@ -21,10 +21,8 @@ Network::Network(string net_File, string tl_File) {
         
         node_Number = num_of_nodes;
         graph.resize(node_Number);
-        vector<phase> a;
-        phase p = {0,0,0};
-        a.push_back(p);
-        TLS.resize(node_Number, *new Traffic_Light(-1,-1,-1,a));
+
+        TLS.resize(node_Number, *new Traffic_Light(-1,-1,-1,{},{}));//tl_ID, tl_Cycle, phase_Num, phase vector, always_allowed_movement vector
         
         for (int i = 0; i < 8; i++) {
             myfile >> skip;
@@ -49,7 +47,7 @@ Network::Network(string net_File, string tl_File) {
     
     ifstream tlFile(tl_File.c_str());
     
-    int currentNode, fromNode, toNode, cycleLength, numOfPhase;
+    int phaseIndex, currentNode, fromNode, toNode, cycleLength, numOfPhase, numOfMovement;
     double split;
     string indicator;
     phase tmp_phase;
@@ -58,19 +56,25 @@ Network::Network(string net_File, string tl_File) {
         getline(tlFile, skip);
         while(tlFile.good())
         {
-            vector<phase> tmp_phases;
-            tlFile >> currentNode >> indicator >> numOfPhase >> cycleLength;
+            tlFile >> currentNode >> indicator >> numOfPhase >> numOfMovement >> cycleLength;
+            vector<phase> tmp_phases(numOfPhase);
+            vector<movement> tmp_movements;
             if(indicator != "TL")
                 continue;
             else
             {
-                for(int i = 0; i < numOfPhase; i++)
+                for(int i = 0; i < numOfMovement; i++)
                 {
-                    tlFile >> fromNode >> currentNode >> toNode >> split;
-                    tmp_phase = {fromNode-1, toNode-1, split};
-                    tmp_phases.push_back(tmp_phase);
+                    tlFile >> phaseIndex >> fromNode >> currentNode >> toNode >> split;
+                    if (phaseIndex == 0) {
+                        tmp_movements.push_back({fromNode-1, currentNode-1, toNode-1});
+                    }
+                    else {
+                        tmp_phases[phaseIndex-1].movements.push_back({fromNode-1, currentNode-1, toNode-1});
+                        tmp_phases[phaseIndex-1].split = split;
+                    }
                 }
-                Traffic_Light tmp_tl = *new Traffic_Light(currentNode, cycleLength, numOfPhase, tmp_phases);
+                Traffic_Light tmp_tl = *new Traffic_Light(currentNode, cycleLength, numOfPhase, tmp_phases, tmp_movements);
                 TLS[currentNode-1] = tmp_tl;
             }
         }
@@ -79,6 +83,8 @@ Network::Network(string net_File, string tl_File) {
     {
         cout << "Traffic light file does not load!" << endl;
     }
+    
+    tlFile.close();
 }
 
 // Add a vehicle into the network
@@ -154,6 +160,14 @@ void Network::checkState() {
         else {//At next node, but not at dest node. Mode 1&3. 3 means origins from this node, 1 means reachs next node.
             vector<vector<connect>> currentTravelTime = getCurrentTravelTime();//calculate a new route at the current node.
             iter->get_SP(iter->end_Node, currentTravelTime, TLS);
+            // Generate a new travel time for this vehicle when it first enters the new link
+            currentTravelTime = getCurrentTravelTime();
+            /****************
+             *******************
+             *****************************
+                    Maybe we can use seed to control the travel time generation
+             ******************************************
+             */
             /*
              Update vehicle state after a shortest path finding
              */

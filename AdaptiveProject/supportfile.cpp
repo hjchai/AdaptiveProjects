@@ -85,11 +85,12 @@ void Vehicle::get_SP(int dest_Node, vector<vector<connect>> currentTravelTime, v
  ***
  ***********************************/
 
-Traffic_Light::Traffic_Light(int tlID, int tlCycle, int phaseNumber, vector<phase> phase) {
+Traffic_Light::Traffic_Light(int tlID, int tlCycle, int phaseNumber, vector<phase> phase, vector<movement> alwaysAllowedMovements) {
     tl_ID = tlID-1;
     tl_Cycle = tlCycle;
     phase_Number = phaseNumber;
     phases = phase;
+    always_Allowed_Movements = alwaysAllowedMovements;
 }
 
 int Traffic_Light::getPenalty(int timeStep, int upstreamNode, int trafficLightNode, int downstreamNode)
@@ -104,9 +105,11 @@ int Traffic_Light::getPenalty(int timeStep, int upstreamNode, int trafficLightNo
     for(vector<phase>::const_iterator iter = phases.begin(); iter < phases.end(); iter++)
     {
         time_end = time_start + iter->split * tl_Cycle;
-        if(iter->upstream_Node == upstreamNode && iter->downstream_Node == downstreamNode)
-        {
-            index.push_back(make_pair(time_start, time_end));
+        for (vector<movement>::const_iterator iter1 = iter->movements.begin(); iter1 < iter->movements.end(); iter1++) {
+            if(iter1->upstream_Node == upstreamNode && iter1->downstream_Node == downstreamNode)
+            {
+                index.push_back(make_pair(time_start, time_end));
+            }
         }
         time_start += time_end;
     }

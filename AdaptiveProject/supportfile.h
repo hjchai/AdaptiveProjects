@@ -58,9 +58,17 @@ public:
  ***
  ***********************************/
 
-struct phase {
+/* Phase contains multiple movements. Each movement has a upstream node, and a downstream node.*/
+/* Each intersection has a bunch of phases, each phase has a conresponding split. The first phase in phases vector is designed for the always allows movements, like all the right turns if there are any.*/
+
+struct movement {
     int upstream_Node;
+    int current_node;
     int downstream_Node;
+};
+
+struct phase {
+    vector<movement> movements;
     double split;
 };
 
@@ -70,11 +78,14 @@ private:
     int tl_Cycle;
     int phase_Number;
     vector<phase> phases;
+    vector<movement> always_Allowed_Movements;
+    
+    int cycle_Time_Eclaps;//This variable is designed to store the time of entire cycles eclapsed, up to now
 public:
     Traffic_Light();
-    Traffic_Light(int tlID , int tlCycle , int phaseNumber , vector<phase> phase);
+    Traffic_Light(int tlID , int tlCycle , int phaseNumber , vector<phase> phase, vector<movement> alwaysAllowedMovement);
     int getPenalty(int time, int upstreamNode, int trafficLightNode, int downstreamNode);
-    
+    //friend classes
     friend class Network;
     friend class Vehicle;
 };
