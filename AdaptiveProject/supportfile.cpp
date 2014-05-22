@@ -85,12 +85,13 @@ void Vehicle::get_SP(int dest_Node, vector<vector<connect>> currentTravelTime, v
  ***
  ***********************************/
 
-Traffic_Light::Traffic_Light(int tlID, int tlCycle, int phaseNumber, vector<phase> phase, vector<movement> alwaysAllowedMovements) {
+Traffic_Light::Traffic_Light(int tlID, int nodeID, int tlCycle, int phaseNumber, vector<phase> phase, vector<movement> alwaysAllowedMovements) {
     tl_ID = tlID-1;
     tl_Cycle = tlCycle;
     phase_Number = phaseNumber;
     phases = phase;
     always_Allowed_Movements = alwaysAllowedMovements;
+    node_ID = nodeID;
 }
 
 int Traffic_Light::getPenalty(int timeStep, int upstreamNode, int trafficLightNode, int downstreamNode)
@@ -140,4 +141,14 @@ int generateRandCost(vector<pair<int, double>> possibleValue) {
         }
     }
     return possibleValue.begin()->first;
+}
+
+vector<pair<int, int>>::iterator find(int nextNode, vector<pair<int, int>> &flowByMovement) {
+    vector<pair<int, int>>::iterator iter;
+    for (iter = flowByMovement.begin(); iter < flowByMovement.end(); iter++) {
+        if (iter->first == nextNode) {
+            return iter;
+        }
+    }
+    return iter;
 }

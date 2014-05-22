@@ -1,4 +1,5 @@
 #include "network.h"
+#include <numeric>
 
 vector<connect>::iterator findNode(int node, vector<connect> & adjacent_Nodes) {
     vector<connect>::iterator iter;
@@ -22,7 +23,7 @@ Network::Network(string net_File, string tl_File) {
         node_Number = num_of_nodes;
         graph.resize(node_Number);
 
-        TLS.resize(node_Number, *new Traffic_Light(-1,-1,-1,{},{}));//tl_ID, tl_Cycle, phase_Num, phase vector, always_allowed_movement vector
+        TLS.resize(node_Number, *new Traffic_Light(-1,-1,-1,-1,{},{}));//tl_ID, tl_Cycle, phase_Num, phase vector, always_allowed_movement vector
         
         for (int i = 0; i < 8; i++) {
             myfile >> skip;
@@ -36,7 +37,7 @@ Network::Network(string net_File, string tl_File) {
             else {
                 vector<pair<int, double>> tmp;
                 tmp.push_back(make_pair(time, prob));
-                connect adj_Link = {tail-1, tmp, 0, capacity};
+                connect adj_Link = {tail-1, tmp, 0, capacity, {}};
                 graph[head-1].push_back(adj_Link);
             }
         }
@@ -74,7 +75,7 @@ Network::Network(string net_File, string tl_File) {
                         tmp_phases[phaseIndex-1].split = split;
                     }
                 }
-                Traffic_Light tmp_tl = *new Traffic_Light(currentNode, cycleLength, numOfPhase, tmp_phases, tmp_movements);
+                Traffic_Light tmp_tl = *new Traffic_Light(currentNode, currentNode, cycleLength, numOfPhase, tmp_phases, tmp_movements);
                 TLS[currentNode-1] = tmp_tl;
             }
         }
@@ -145,7 +146,7 @@ void Network::checkState() {
             int to = iter->online_State.next_Node;
             int penalty = TLS[current].getPenalty(timeStep, from, current, to);
             if (penalty != 0) {
-                iter->time_Spent = iter->time_Spent + 1; //bug
+                iter->time_Spent = iter->time_Spent + 1;
             }
             else {
                 iter->online_State.if_At_Next_Node = 0;
@@ -155,9 +156,22 @@ void Network::checkState() {
                 graph[current][dis2].flow = graph[current][dis2].flow - 1;
                 int dis3 = (int)distance(graph[to].begin(), findNode(current, graph[to]));
                 graph[to][dis3].flow = graph[to][dis3].flow + 1;
+                
+                //update flow by movement
+                vector<pair<int, int>>::iterator pair_Found = find(to, graph[current][dis2].flow_By_Movement);
+                pair_Found->second = pair_Found->second - 1;
+                
+                int from_node = (int)distance(graph[to].begin(), findNode(current, graph[to]));
+                int to_Intended = iter->SP_Result[to][from_node][0].second;
+                pair_Found = find(to_Intended, graph[to][dis3].flow_By_Movement);
+                if (pair_Found == graph[to][dis3].flow_By_Movement.end()) {
+                    graph[to][dis3].flow_By_Movement.push_back(make_pair(to_Intended, 1));
+                }
+                else
+                    pair_Found->second = pair_Found->second + 1;
             }
         }
-        else {//At next node, but not at dest node. Mode 1&3. 3 means origins from this node, 1 means reachs next node.
+        else {//Mode 3 means origins from this node, Mode 1 means reachs next node.
             vector<vector<connect>> currentTravelTime = getCurrentTravelTime();//calculate a new route at the current node.
             iter->get_SP(iter->end_Node, currentTravelTime, TLS);
             // Generate a new travel time for this vehicle when it first enters the new link
@@ -209,9 +223,24 @@ void Network::checkState() {
                 if (iter->online_State.if_At_Next_Node == 1) {
                     int dis2 = (int)distance(graph[current].begin(), findNode(from, graph[current]));
                     graph[current][dis2].flow = graph[current][dis2].flow - 1;
+                    //update flow by movement
+                    vector<pair<int, int>>::iterator pair_Found = find(to, graph[current][dis2].flow_By_Movement);
+                    pair_Found->second = pair_Found->second - 1;
                 }
+                
                 int dis3 = (int)distance(graph[to].begin(), findNode(current, graph[to]));
                 graph[to][dis3].flow = graph[to][dis3].flow + 1;
+                
+                //update flow by movement
+                int from_node = (int)distance(graph[to].begin(), findNode(current, graph[to]));
+                int to_Intended = iter->SP_Result[to][from_node][0].second;
+                vector<pair<int, int>>::iterator pair_Found = find(to_Intended, graph[to][dis3].flow_By_Movement);
+                if (pair_Found == graph[to][dis3].flow_By_Movement.end()) {
+                    //int from_node = (int)distance(graph[current].begin(), findNode(from, graph[current]));
+                    graph[to][dis3].flow_By_Movement.push_back(make_pair(to_Intended, 1));
+                }
+                else
+                    pair_Found->second = pair_Found->second + 1;
                 
                 // UPDATE vehicle state
                 iter->online_State.last_Node = from;
@@ -226,3 +255,40 @@ void Network::checkState() {
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+
+void Network::update_TLS(int tl_ID) {
+    int current_node = TLS[tl_ID].node_ID;
+    vector<connect> current_Intersection = graph[current_node];
+    int size = (int)current_Intersection.size();
+    vector<double> flow(size,0);
+    int index = 0;
+    for (vector<connect>::iterator iter = current_Intersection.begin(); iter < current_Intersection.end(); iter++) {
+        flow[index] = iter->flow;
+        index++;
+    }
+    int sum = accumulate(flow.begin(), flow.end(), 0);
+    for (vector<double>::iterator iter1 = flow.begin(); iter1 < flow.end(); iter1++) {
+        *iter1 = *iter1/sum;
+    }
+    
+}
+
+int Network::get_Number_Of_Vehicles(int updstreamNode, int currentNode, int downstreamNode) {
+    vector<connect>::iterator iter1 = findNode(updstreamNode, graph[currentNode]);
+    int dis = (int)distance(graph[currentNode].begin(), iter1);
+    vector<pair<int, int>>::iterator iter = find(downstreamNode, graph[currentNode][dis].flow_By_Movement);
+    if (iter == graph[currentNode][dis].flow_By_Movement.end()) {
+        return 0;
+    }
+    else
+        return  iter->second;
+}
+
+
+
+
+
+
+

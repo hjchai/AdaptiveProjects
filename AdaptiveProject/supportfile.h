@@ -15,6 +15,8 @@ struct connect {
     vector<pair<int, double>> possible_Cost;
     int flow;
     int capacity;
+    //////
+    vector<pair<int, int>> flow_By_Movement; //pair<nextNode, number of vehicles>
 };
 struct vehicle_state {
     int last_Node;
@@ -75,6 +77,7 @@ struct phase {
 class Traffic_Light {
 private:
     int tl_ID;
+    int node_ID;
     int tl_Cycle;
     int phase_Number;
     vector<phase> phases;
@@ -83,7 +86,7 @@ private:
     int cycle_Time_Eclaps;//This variable is designed to store the time of entire cycles eclapsed, up to now
 public:
     Traffic_Light();
-    Traffic_Light(int tlID , int tlCycle , int phaseNumber , vector<phase> phase, vector<movement> alwaysAllowedMovement);
+    Traffic_Light(int tlID, int nodeID, int tlCycle , int phaseNumber , vector<phase> phase, vector<movement> alwaysAllowedMovement);
     int getPenalty(int time, int upstreamNode, int trafficLightNode, int downstreamNode);
     //friend classes
     friend class Network;
@@ -91,5 +94,6 @@ public:
 };
 
 int generateRandCost(vector<pair<int, double>>);
+vector<pair<int, int>>::iterator find(int nextNode, vector<pair<int, int>>&);
 
 #endif
