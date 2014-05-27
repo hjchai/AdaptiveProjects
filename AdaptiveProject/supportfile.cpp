@@ -92,6 +92,15 @@ Traffic_Light::Traffic_Light(int tlID, int nodeID, int tlCycle, int phaseNumber,
     phases = phase;
     always_Allowed_Movements = alwaysAllowedMovements;
     node_ID = nodeID;
+    
+    //These variables only need to update within traffic light itself
+    cycle_Time_Eclaps = 0;
+    change_Now = false;
+    current_Phase = phases.begin();
+    time_In_Current_Cycle = 0;
+    if (phase_Number != -1) {
+        time_To_Current_Phase = current_Phase->split * tl_Cycle;
+    }
 }
 
 int Traffic_Light::getPenalty(int timeStep, int upstreamNode, int trafficLightNode, int downstreamNode)

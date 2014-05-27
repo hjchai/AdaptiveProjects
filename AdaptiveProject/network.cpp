@@ -257,22 +257,54 @@ void Network::checkState() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+void Network::update_TLS() {
+    for (vector<Traffic_Light>::iterator iter = TLS.begin(); iter < TLS.end(); iter++) {
+        if (iter->phase_Number != -1) {//for those intersections without traffic lights, skip directly
+            if (iter->change_Now == true) {
+                update_TLS(iter->tl_ID);
+                iter->change_Now = false;
+                iter->time_In_Current_Cycle = iter->time_In_Current_Cycle + 1;
+                iter->current_Phase = iter->phases.begin();
+                iter->time_To_Current_Phase = iter->current_Phase->split * iter->tl_Cycle;
+            }
+            else {
+                iter->time_In_Current_Cycle = iter->time_In_Current_Cycle + 1;
+                if (iter->time_In_Current_Cycle >= iter->tl_Cycle) {
+                    iter->change_Now = true;
+                    iter->cycle_Time_Eclaps = iter->cycle_Time_Eclaps + iter->tl_Cycle;
+                    iter->time_In_Current_Cycle = 0;
+                }
+                else if (iter->time_In_Current_Cycle == iter->time_To_Current_Phase) {
+                    iter->current_Phase = iter->current_Phase + 1;
+                    iter->time_To_Current_Phase = iter->time_To_Current_Phase + iter->current_Phase->split * iter->tl_Cycle;
+                }
+            }
+        }
+    }
+}
 
 void Network::update_TLS(int tl_ID) {
-    int current_node = TLS[tl_ID].node_ID;
-    vector<connect> current_Intersection = graph[current_node];
-    int size = (int)current_Intersection.size();
-    vector<double> flow(size,0);
+    vector<phase> all_Phases = TLS[tl_ID].phases;
+    int phase_Num = TLS[tl_ID].phase_Number;
+    vector<double> flow(phase_Num,0);
     int index = 0;
-    for (vector<connect>::iterator iter = current_Intersection.begin(); iter < current_Intersection.end(); iter++) {
-        flow[index] = iter->flow;
+    for (vector<phase>::iterator iter = all_Phases.begin(); iter < all_Phases.end(); iter++) {
+        for (vector<movement>::iterator iter1 = iter->movements.begin(); iter1 < iter->movements.end(); iter1++) {
+            flow[index] += get_Number_Of_Vehicles(iter1->upstream_Node, iter1->current_node, iter1->downstream_Node);
+        }
         index++;
     }
     int sum = accumulate(flow.begin(), flow.end(), 0);
-    for (vector<double>::iterator iter1 = flow.begin(); iter1 < flow.end(); iter1++) {
-        *iter1 = *iter1/sum;
+    if (sum != 0) {
+        for (vector<double>::iterator iter1 = flow.begin(); iter1 < flow.end(); iter1++) {
+            *iter1 = *iter1/sum;
+        }
+        index = 0;
+        for (vector<phase>::iterator iter2 = all_Phases.begin(); iter2 < all_Phases.end(); iter2++) {
+            iter2->split = flow[index];
+            index++;
+        }
     }
-    
 }
 
 int Network::get_Number_Of_Vehicles(int updstreamNode, int currentNode, int downstreamNode) {

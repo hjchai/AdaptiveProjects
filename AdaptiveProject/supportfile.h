@@ -83,7 +83,12 @@ private:
     vector<phase> phases;
     vector<movement> always_Allowed_Movements;
     
-    int cycle_Time_Eclaps;//This variable is designed to store the time of entire cycles eclapsed, up to now
+    /////////////////////////////////////////////////////
+    int cycle_Time_Eclaps;//This variable is designed to store the time of entire cycles eclapsed, before the current cycle
+    bool change_Now;//Ture: for change now, false: for not change
+    vector<phase>::iterator current_Phase;
+    int time_To_Current_Phase;
+    int time_In_Current_Cycle;
 public:
     Traffic_Light();
     Traffic_Light(int tlID, int nodeID, int tlCycle , int phaseNumber , vector<phase> phase, vector<movement> alwaysAllowedMovement);

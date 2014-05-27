@@ -56,7 +56,8 @@ int main(int argc, const char * argv[])
         }
         
         vector<vector<connect>> currentLinkCost = net.getCurrentTravelTime();
-        //net.update_TLS();
+        
+        net.update_TLS();//still need a lot of work, for example some TL don't need to update at this time step
         net.checkState();
         timer ++;
     }

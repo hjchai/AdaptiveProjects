@@ -22,6 +22,7 @@ public:
     vector<vector<connect>> getCurrentTravelTime();
     void checkState();// In every time step, check out all vehicles to see if they should change their decision or not.
     //Doing
+    void update_TLS();
     void update_TLS(int tl_ID);
     int get_Number_Of_Vehicles(int upstreamNode, int currentNode, int downstreamNode);
     //Utility function
